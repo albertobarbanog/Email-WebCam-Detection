@@ -1,10 +1,10 @@
-import imghdr
+from PIL import Image
 import smtplib
 from email.message import EmailMessage
 
-password = ("zmovcfqldcaytwnf")
-SENDER = ("albertobarbanog@gmail.com")
-RECEIVER = ("albertobarbanog@gmail.com")
+password = "zmovcfqldcaytwnf"
+SENDER = "albertobarbanog@gmail.com"
+RECEIVER = "albertobarbanog@gmail.com"
 
 def send_email(image_path):
     email_message = EmailMessage()
@@ -13,7 +13,12 @@ def send_email(image_path):
 
     with open(image_path, "rb") as file:
         content = file.read()
-    email_message.add_attachment(content, maintype='image', subtype=imghdr.what(None, content))
+
+    # Use Pillow to determine the image subtype
+    image = Image.open(image_path)
+    image_subtype = image.format.lower()
+
+    email_message.add_attachment(content, maintype='image', subtype=image_subtype)
 
     gmail = smtplib.SMTP("smtp.gmail.com", 587)
     gmail.ehlo()
@@ -23,5 +28,4 @@ def send_email(image_path):
     gmail.quit()
 
 if __name__ == "__main__":
-    send_email(image_path="image.png")
-
+    send_email(image_path="images/23.png")
